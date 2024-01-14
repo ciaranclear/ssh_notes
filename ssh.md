@@ -1,5 +1,15 @@
 # SSH CONTENTS
 
+1. [install SSH](#1-install-ssh)
+2. [Connect to the Server](#2-connect-to-the-server)
+3. [Client .ssh Directory Structure](#3-client-ssh-directory-structure)
+4. [Client Config File Structure](#4-client-config-file-structure)
+5. [Create SSH Keys to Connect to Server without a Password](#5-create-ssh-keys-to-connect-to-server-without-a-password)
+6. [SSH Agent](#6-ssh-agent)
+7. [Server side SSH](#7-server-side-ssh)
+8. [Running Commands on Remote Servers with SSH](#8-running-commands-on-remote-servers-with-ssh)
+9. [Using sshpass](#9-using-sshpass)
+
 ## 1 Install SSH
 Check if ssh is installed on client.
 ```cli
@@ -39,14 +49,14 @@ The command will also displey the keys that are being used.
     ssh -v <username>@<ip_address or fqdn>
 ```
 
-## Client .ssh Directory Structure
+## 3 Client .ssh Directory Structure
 ```
 .ssh
     known_hosts
     config
 ```
 
-## Client Config File Struscture
+## 4 Client Config File Structure
 Configure the clients config file.
 ```
     Host server1
@@ -64,7 +74,7 @@ Configure the clients config file.
     # adding the identity file is optional
 ```
 
-## Create SSH Keys to Connect to Server without a Password
+## 5 Create SSH Keys to Connect to Server without a Password
 generate a default ssh key. # will create a default key in your .ssh directory.
 will also prompt you for an optional passphrase for the key.
 will create a private and public key.
@@ -105,7 +115,7 @@ Make custom ssh keys for each remote server.
 * the comment will be at the end of the public key.
 * the comment can be deleted from the key and it will still work.
 
-## SSH Agent
+## 6 SSH Agent
 Use an ssh agent so you only have to enter pasphrasses one time in a terminal session.
 ```
     ps aux | grep ssh-agent
@@ -121,7 +131,7 @@ Add the private key to the ssh-agent. You will be prompted for a passphrase one 
     ssh-add ~/.ssh/acme_id_ed25519
 ``` 
 
-## Server side SSH
+## 7 Server side SSH
 Check if sshd is installed on the server. sshd is ssh daemon.
 ```
     which sshd
@@ -177,7 +187,7 @@ The .ssh directory should contain an authorized_keys file for client public keys
     authorized_keys
 ```
 
-## Running Commands on Remote Servers with SSH
+## 8 Running Commands on Remote Servers with SSH
 ```sh
 #!/bin/bash
 
@@ -202,7 +212,7 @@ else
 fi
 ```
 
-## Using sshpass
+## 9 Using sshpass
 Install sshpass
 ```cli
 sudo apt install sshpass
@@ -245,5 +255,15 @@ SSHPASS='serverpassword' sshpass -e ssh -o StrictHostKeyChecking=no username@hos
 
 Use sshpass with scp.
 ```cli
-scp -r <file-path-to-copy-from> --rsh="sshpass -f pass_file ssh -l user" <dest-file-name>:<dest-directory>
+sshpass -p <server-password> scp <filename> username@hostname:/home/server1/
+```
+
+Using sshpass with scp where the servers ssh password is in a pass file.
+```cli
+sshpass -f <password-file> scp <filename> username@hostname:/home/server1/
+```
+
+Using sshpass with scp to copy a file from the remote server where the ssh password is in a pass file.
+```cli
+sshpass -f "pass_file" scp username@hostname:/home/server1/server_file.txt /home/ciaran/
 ```
